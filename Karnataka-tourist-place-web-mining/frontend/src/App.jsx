@@ -6,7 +6,7 @@ import {
   FileText, Sparkles, Edit3, Eye, CheckCircle2, Send
 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('keywords'); // 'keywords' | 'articles'
