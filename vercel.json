@@ -1,4 +1,26 @@
 {
-  "buildCommand": "cd Karnataka-tourist-place-web-mining/frontend && npm install && npm run build",
-  "outputDirectory": "Karnataka-tourist-place-web-mining/frontend/dist"
+  "version": 2,
+  "builds": [
+    {
+      "src": "Karnataka-tourist-place-web-mining/backend/src/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "Karnataka-tourist-place-web-mining/frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "Karnataka-tourist-place-web-mining/backend/src/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "Karnataka-tourist-place-web-mining/frontend/$1"
+    }
+  ]
 }

@@ -387,9 +387,12 @@ ${article.content_kn}
   }
 });
 
-// Initialize Obscura connection on startup
-obscura.connect();
+// Initialize Obscura connection on startup if not in serverless
+if (!process.env.VERCEL) {
+  obscura.connect();
+  app.listen(PORT, () => {
+    console.log(`[Backend] Karnataka Tourist Keyword Finder Server running on http://localhost:${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`[Backend] Karnataka Tourist Keyword Finder Server running on http://localhost:${PORT}`);
-});
+module.exports = app;

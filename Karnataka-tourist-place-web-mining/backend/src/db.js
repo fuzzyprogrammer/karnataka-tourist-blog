@@ -2,7 +2,9 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.resolve(__dirname, '../../data/keywords.db');
+const dbPath = process.env.VERCEL
+  ? path.resolve('/tmp', 'keywords.db')
+  : path.resolve(__dirname, '../../data/keywords.db');
 
 // Ensure data folder exists
 const dataDir = path.dirname(dbPath);
