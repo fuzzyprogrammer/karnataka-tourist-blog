@@ -1,4 +1,3 @@
-const puppeteer = require('puppeteer-core');
 const axios = require('axios');
 
 class ObscuraService {
@@ -8,7 +7,10 @@ class ObscuraService {
   }
 
   async connect() {
+    if (process.env.VERCEL) return false;
     try {
+      const puppeteerModule = await import('puppeteer-core');
+      const puppeteer = puppeteerModule.default || puppeteerModule;
       this.browser = await puppeteer.connect({
         browserWSEndpoint: `${this.endpoint}/devtools/browser`,
       });
