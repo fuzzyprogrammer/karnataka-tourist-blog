@@ -1,0 +1,15 @@
+{
+  "name": "karnataka-tourist-blog",
+  "version": "1.0.0",
+  "description": "Karnataka Tourist Blog - Local Backend with Vercel Frontend",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd Karnataka-tourist-place-web-mining/backend && npm start",
+    "frontend": "cd Karnataka-tourist-place-web-mining/frontend && npm run dev",
+    "build:frontend": "cd Karnataka-tourist-place-web-mining/frontend && npm run build",
+    "deploy": "npm run build:frontend && vercel --prod"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
