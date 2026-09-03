@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd Karnataka-tourist-place-web-mining/frontend && npm install && npm run build",
+  "outputDirectory": "Karnataka-tourist-place-web-mining/frontend/dist"
+}
