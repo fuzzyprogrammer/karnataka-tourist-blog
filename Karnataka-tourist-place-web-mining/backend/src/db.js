@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 let sqlite3;
 try {
   sqlite3 = require('sqlite3').verbose();
