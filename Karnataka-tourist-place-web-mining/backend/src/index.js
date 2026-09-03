@@ -38,11 +38,11 @@ app.get('/api/keywords/stats', async (req, res) => {
     const totalRev = await db.get('SELECT SUM(estimated_revenue) as total FROM keywords');
 
     res.json({
-      total_keywords: totalKw.count || 0,
-      easy_difficulty: easyKw.count || 0,
-      high_revenue_count: highRev.count || 0,
-      kannada_keywords: kannadaCount.count || 0,
-      total_potential_revenue: totalRev.total ? Math.round(totalRev.total) : 0
+      total_keywords: totalKw?.count || 0,
+      easy_difficulty: easyKw?.count || 0,
+      high_revenue_count: highRev?.count || 0,
+      kannada_keywords: kannadaCount?.count || 0,
+      total_potential_revenue: totalRev?.total ? Math.round(totalRev.total) : 0
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
