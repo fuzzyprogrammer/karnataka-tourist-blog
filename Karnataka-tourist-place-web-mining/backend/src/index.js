@@ -395,4 +395,67 @@ if (!process.env.VERCEL) {
   });
 }
 
+// 8. Vercel Cron Job for scheduled keyword mining
+app.post('/api/cron/mine', async (req, res) => {
+  const { placeName, limit = 5 } = req.body || {};
+  
+  let targetPlaces = [];
+  if (placeName) {
+    targetPlaces = seedPlaces.filter(p => p.en.toLowerCase() === placeName.toLowerCase());
+  } else {
+    targetPlaces = seedPlaces.slice(0, parseInt(limit));
+  }
+
+  if (targetPlaces.length === 0) {
+    return res.status(400).json({ error: 'Place not found in seed list' });
+  }
+
+  let totalKeywords = 0;
+  let errors = [];
+
+  for (const place of targetPlaces) {
+    try {
+      console.log(`[Cron] Mining: ${place.en}`);
+      const keywords = await expandTouristKeywords(place.en, place.kn);
+      
+      for (const item of keywords) {
+        const metrics = calculateMetrics(item.keyword, item.language);
+        const domainRecs = generateDomainRecommendations(item.keyword, place.en);
+
+        await db.run(
+          `INSERT OR IGNORE INTO keywords 
+          (keyword, keyword_kannada, language, seed_place, search_volume, keyword_difficulty, cpc, estimated_revenue, competition_level, domain_recommendations)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            item.keyword,
+            item.language === 'kn' ? item.keyword : place.kn,
+            item.language,
+            place.en,
+            metrics.search_volume,
+            metrics.keyword_difficulty,
+            metrics.cpc,
+            metrics.estimated_revenue,
+            metrics.competition_level,
+            JSON.stringify(domainRecs)
+          ]
+        );
+        totalKeywords++;
+      }
+      console.log(`[Cron] Found ${keywords.length} keywords for ${place.en}`);
+    } catch (err) {
+      console.error(`[Cron] Failed for ${place.en}:`, err.message);
+      errors.push({ place: place.en, error: err.message });
+    }
+  }
+
+  console.log(`[Cron] Mining complete! Total keywords: ${totalKeywords}, Errors: ${errors.length}`);
+  
+  res.json({
+    success: true,
+    total_keywords_mined: totalKeywords,
+    places_processed: targetPlaces.length,
+    errors: errors.length > 0 ? errors : undefined
+  });
+});
+
 module.exports = app;

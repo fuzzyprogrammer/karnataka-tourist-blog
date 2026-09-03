@@ -130,15 +130,24 @@ export default function App() {
   const triggerMining = async () => {
     setMining(true);
     try {
-      await axios.post(`${API_BASE}/keywords/mine`, { placeName: selectedPlace });
-      setTimeout(() => {
-        fetchKeywords();
-        fetchStats();
+      const response = await axios.post(`${API_BASE}/cron/mine`, { 
+        placeName: selectedPlace, 
+        limit: selectedPlace ? 1 : 5 
+      });
+      
+      if (response.data.total_keywords_mined > 0) {
+        await fetchKeywords();
+        await fetchStats();
         setMining(false);
-      }, 3000);
+        alert(`Mining complete! Found ${response.data.total_keywords_mined} keywords.`);
+      } else {
+        setMining(false);
+        alert('No keywords mined. Try a different place.');
+      }
     } catch (e) {
-      console.error('Error starting mining:', e);
+      console.error('Error mining keywords:', e);
       setMining(false);
+      alert('Error: ' + (e.response?.data?.error || e.message));
     }
   };
 

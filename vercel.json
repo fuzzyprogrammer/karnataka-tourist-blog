@@ -22,5 +22,11 @@
       "src": "/(.*)",
       "dest": "Karnataka-tourist-place-web-mining/frontend/$1"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/mine",
+      "schedule": "0 2 * * *"
+    }
   ]
 }
